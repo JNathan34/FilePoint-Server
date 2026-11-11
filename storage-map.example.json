@@ -1,0 +1,13 @@
+{
+  "Documents": "/srv/filepoint/storage/Documents",
+  "Downloads": "/srv/filepoint/storage/Downloads",
+  "Media": "/srv/filepoint/storage/Media",
+  "Gallery": "/srv/filepoint/storage/Gallery",
+  "Backup": "/srv/filepoint/storage/Backup",
+  "2TB HDD 1": "/srv/filepoint/storage/2TB HDD 1",
+  "2TB HDD 2": "/srv/filepoint/storage/2TB HDD 2",
+  "2TB HDD 3": "/srv/filepoint/storage/2TB HDD 3",
+  "8TB HDD": "/srv/filepoint/storage/8TB HDD",
+  "ZimaOS HDD": "/srv/filepoint/storage/ZimaOS HDD",
+  "Connected devices": "/media/FilePoint-Devices"
+}

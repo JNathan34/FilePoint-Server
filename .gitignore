@@ -1,0 +1,35 @@
+# Deployment configuration and credentials
+/.env
+/*.env
+/docker-compose.yml
+/filebrowser/config.yaml*
+/storage-map.json
+/native-write-sources.json
+/access.json
+/user-verification.json
+/microsoft-bridge.json
+/microsoft-rclone.conf
+
+# Server data
+/connected-storage*.json
+/backups/
+/filebrowser-backup-*/
+/filebrowser/cache/
+/onlyoffice/
+/folder-material-icons/
+/hidden-items/
+/home-layout/
+/microsoft-bridge/
+/operation-history/
+/foldericons/android/jmtpfs-source/
+/foldericons/storage-*.json
+/foldericons/*.backup.yml
+*.db
+*.db-*
+*.sqlite*
+*.log
+*.pem
+*.key
+__pycache__/
+*.py[cod]
+node_modules/

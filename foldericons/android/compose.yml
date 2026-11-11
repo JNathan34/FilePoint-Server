@@ -1,0 +1,22 @@
+name: filepoint-android
+services:
+  android:
+    build: .
+    image: filepoint-android:local
+    container_name: filepoint-android
+    restart: "no" # Paused after phone mount-loop recovery; re-enable only after hardware verification.
+    network_mode: none
+    cap_drop: [ALL]
+    cap_add: [SYS_ADMIN, DAC_OVERRIDE]
+    security_opt:
+      - apparmor:unconfined
+      - no-new-privileges:true
+    devices:
+      - /dev/fuse:/dev/fuse
+    device_cgroup_rules:
+      - 'c 189:* rwm'
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - /media/FilePoint-Phones:/phones:rshared
+    mem_limit: 256m
+    cpus: 0.5

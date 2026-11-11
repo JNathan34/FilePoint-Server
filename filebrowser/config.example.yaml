@@ -1,0 +1,163 @@
+server:
+  port: 80
+  listen: "0.0.0.0"
+  database: "/home/filebrowser/data/database.db"
+  cacheDir: "/home/filebrowser/data/cache"
+  cacheDirCleanup: false
+
+  externalUrl: "https://files.example.com"
+  internalUrl: "http://files:80"
+
+  disableTypeDetectionByHeader: false
+  numImageProcessors: 2
+  disablePreviews: false
+  disablePreviewResize: false
+
+  filesystem:
+    createFilePermission: "664"
+    createDirectoryPermission: "775"
+
+  logging:
+    - levels: "info|warning|error"
+      utc: true
+
+  sources:
+    - name: "Home"
+      path: "/storage"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "Documents"
+      path: "/storage/Documents"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "Downloads"
+      path: "/storage/Downloads"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "Media"
+      path: "/storage/Media"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "Gallery"
+      path: "/storage/Gallery"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "Backup"
+      path: "/storage/Backup"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "2TB HDD 1"
+      path: "/storage/2TB HDD 1"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "2TB HDD 2"
+      path: "/storage/2TB HDD 2"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "2TB HDD 3"
+      path: "/storage/2TB HDD 3"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "ZimaOS HDD"
+      path: "/storage/ZimaOS HDD"
+      config:
+        defaultEnabled: true
+        private: false
+
+    - name: "8TB HDD"
+      path: "/storage/8TB HDD"
+      config:
+        defaultEnabled: true
+        private: false
+
+
+http:
+  trustedHeaders:
+    - "X-Forwarded-Proto"
+    - "X-Forwarded-Host"
+    - "X-Forwarded-For"
+    - "X-Real-IP"
+
+
+auth:
+  adminUsername: "admin"
+  adminPassword: "REPLACE_WITH_UNIQUE_ADMIN_PASSWORD"
+  key: "REPLACE_WITH_UNIQUE_SIGNING_KEY"
+
+  tokenExpirationHours: 12
+
+  methods:
+    password:
+      enabled: true
+      signup: false
+      minLength: 12
+
+
+integrations:
+  office:
+    url: "https://office.example.com"
+    internalUrl: "http://office:80"
+    secret: "REPLACE_WITH_SAME_JWT_SECRET_AS_OFFICE_ENV"
+    viewOnly: false
+
+
+frontend:
+  name: "FilePoint"
+  disableUsedPercentage: true
+
+
+userDefaults:
+  account:
+    permissions:
+      admin: false
+      api: true
+      modify: true
+      create: true
+      delete: true
+      share: true
+      download: true
+      realtime: true
+
+  listing:
+    deleteWithoutConfirming: false
+    deleteAfterArchive: false
+    viewMode: "list"
+    showHidden: false
+
+  preview:
+    image: true
+    video: false
+    audio: false
+    motionVideoPreview: false
+    office: false
+    folder: false
+
+  fileViewer:
+    disableOnlyOfficeExt: ".md .txt .html .xml"
+    editorQuickSave: true
+
+  sidebar:
+    sticky: true
+    showTools: false
+
+  ui:
+    locale: "en"
+    darkMode: false

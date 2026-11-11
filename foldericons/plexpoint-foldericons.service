@@ -1,0 +1,42 @@
+[Unit]
+Description=PlexPoint authenticated Files proxy
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=FOLDERICONS_LISTEN_HOST=127.0.0.1
+Environment=FOLDERICONS_LISTEN_PORT=8704
+Environment=FOLDERICONS_UPSTREAM_HOST=127.0.0.1
+Environment=FOLDERICONS_UPSTREAM_PORT=8701
+Environment=FOLDERICONS_DATA_DIR=/DATA/AppData/plexpoint-files-office
+ExecStart=/usr/bin/python3 -B /DATA/AppData/plexpoint-files-office/foldericons/server.py
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/DATA/AppData/plexpoint-files-office/home-layout
+ReadWritePaths=/DATA/AppData/plexpoint-files-office/hidden-items
+ReadWritePaths=/DATA/AppData/plexpoint-files-office/folder-material-icons
+ReadWritePaths=/DATA/AppData/plexpoint-files-office/microsoft-bridge
+ReadWritePaths=/DATA/AppData/plexpoint-files-office/operation-history
+# Add ReadWritePaths entries for the storage-map roots that FilePoint may modify.
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LimitNOFILE=65536
+MemoryMax=256M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

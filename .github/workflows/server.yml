@@ -1,0 +1,21 @@
+name: Server checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  source-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -B -m unittest discover -s foldericons -p 'test_*.py'
+      - run: |
+          node --check foldericons/client.js
+          node --check foldericons/connected_storage_client.js

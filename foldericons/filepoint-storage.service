@@ -1,0 +1,22 @@
+[Unit]
+Description=FilePoint connected storage discovery
+After=local-fs.target
+Before=docker.service
+RequiresMountsFor=/DATA/AppData/plexpoint-files-office /media
+
+[Service]
+Type=simple
+User=root
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStartPre=/usr/bin/python3 -B /DATA/AppData/plexpoint-files-office/foldericons/storage_broker.py --prepare
+ExecStart=/usr/bin/python3 -B /DATA/AppData/plexpoint-files-office/foldericons/storage_broker.py
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+# Mounts must be made in the host namespace, not a systemd private mount namespace.
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_CHOWN
+RestrictSUIDSGID=true
+MemoryMax=128M
+
+[Install]
+WantedBy=multi-user.target

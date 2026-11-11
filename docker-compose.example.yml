@@ -1,0 +1,97 @@
+name: plexpoint-files-office
+
+services:
+  files:
+    image: gtstef/filebrowser:1.5.5-stable@sha256:ffc2c9914b37f6e9afc67e8cf5693f5fa63bb0a83491dc9229caa073828d7503
+    container_name: plexpoint-files
+    user: "0:0"
+    restart: unless-stopped
+
+    environment:
+      TZ: Europe/London
+      FILEBROWSER_CONFIG: /home/filebrowser/data/config.yaml
+
+    ports:
+      - "${FILEPOINT_BIND_IP:-127.0.0.1}:8701:80"
+
+    volumes:
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/filebrowser:/home/filebrowser/data
+      - "/media/FilePoint-Devices:/storage/Connected devices:rslave"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/Documents:/storage/Documents"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/Downloads:/storage/Downloads"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/Media:/storage/Media"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/Gallery:/storage/Gallery"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/Backup:/storage/Backup"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/2TB HDD 1:/storage/2TB HDD 1"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/2TB HDD 2:/storage/2TB HDD 2"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/2TB HDD 3:/storage/2TB HDD 3"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/8TB HDD:/storage/8TB HDD"
+      - "${FILEPOINT_STORAGE_DIR:-/srv/filepoint/storage}/ZimaOS HDD:/storage/ZimaOS HDD"
+
+    mem_limit: 2g
+    cpus: 2
+
+    networks:
+      - office
+
+
+  office:
+    image: onlyoffice/documentserver:9.3.1.2
+    container_name: plexpoint-office
+    restart: unless-stopped
+
+    env_file:
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/office.env
+
+    environment:
+      TZ: Europe/London
+      JWT_ENABLED: "true"
+      JWT_IN_BODY: "true"
+      ALLOW_PRIVATE_IP_ADDRESS: "true"
+      ALLOW_META_IP_ADDRESS: "false"
+
+    ports:
+      - "${FILEPOINT_BIND_IP:-127.0.0.1}:8702:80"
+
+    volumes:
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/onlyoffice/logs:/var/log/onlyoffice
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/onlyoffice/data:/var/www/onlyoffice/Data
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/onlyoffice/lib:/var/lib/onlyoffice
+      - ${FILEPOINT_DATA_DIR:-/DATA/AppData/plexpoint-files-office}/onlyoffice/db:/var/lib/postgresql
+
+    shm_size: 1g
+    mem_limit: 6g
+    cpus: 4
+
+    networks:
+      - office
+
+
+networks:
+  office:
+    name: plexpoint-files-office
+    driver: bridge
+
+
+x-casaos:
+  main: files
+
+  title:
+    en_US: FilePoint
+
+  tagline:
+    en_US: Browse ZimaOS storage and edit documents in your browser
+
+  description:
+    en_US: FileBrowser Quantum with ONLYOFFICE, using the existing document and storage folders directly.
+
+  port_map: "8701"
+  scheme: http
+  index: /
+
+  icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/filebrowser-quantum.png
+
+  architectures:
+    - amd64
+
+  category: Productivity

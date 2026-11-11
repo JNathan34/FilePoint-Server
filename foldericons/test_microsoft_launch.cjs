@@ -1,0 +1,33 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+
+// Exercise the actual client handoff function with controlled browser responses.
+const source = fs.readFileSync(require('node:path').join(__dirname, 'client.js'), 'utf8');
+const start = source.indexOf('  function handoffMicrosoft(');
+const end = source.indexOf('\n  async function openTarget(', start);
+assert.ok(start > 0 && end > start);
+const code = source.slice(start, end) + '\nhandoffMicrosoft';
+const url = 'https://onedrive.live.com/test';
+let opens = 0;
+let fallback;
+const handoff = vm.runInNewContext(code, {window: {open: () => { opens++; return fallback; }}});
+const reserved = {closed: false, location: {}, opener: {}};
+assert.equal(handoff(url, reserved), 'requested');
+assert.equal(reserved.location.href, url);
+assert.equal(reserved.opener, null);
+assert.equal(opens, 0);
+fallback = null;
+assert.equal(handoff(url, null), 'blocked');
+fallback = {location: {}};
+assert.equal(handoff(url, {closed: true}), 'requested');
+assert.equal(fallback.location.href, url);
+const failed = {location: {set href(_value) { throw new Error('navigation denied'); }}};
+assert.equal(handoff(url, failed), 'blocked');
+const crossOrigin = {location: {}, set opener(_value) {throw new Error('cross origin');}};
+assert.equal(handoff(url, crossOrigin), 'requested');
+assert.equal(crossOrigin.location.href, url);
+assert.ok(source.includes('FilePoint cannot check whether the editor has finished loading.'));
+assert.ok(source.includes('result.launchState === "blocked"'));
+assert.ok(source.includes('window.clearTimeout(slow)'));
+console.log('Microsoft launch checks: 5 handoff cases and feedback assertions passed.');
