@@ -16,6 +16,20 @@
 
 ## A look inside FilePoint
 
+### Home
+
+See your drives, available space, connected devices, and pinned folders in one place.
+
+[![FilePoint Home showing drive capacity, connected USB devices, and pinned folders](docs/images/filepoint-home.jpg)](docs/images/filepoint-home.jpg)
+
+### Documents › College › ICT LEVEL 3
+
+The folder tree and custom icons make it easy to find a course unit.
+
+[![FilePoint showing the ICT LEVEL 3 folder with custom icons for its course units](docs/images/ict-level-3.jpg)](docs/images/ict-level-3.jpg)
+
+### File tools
+
 <table>
   <tr>
     <td width="53%" valign="top">
