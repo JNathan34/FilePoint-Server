@@ -1,14 +1,58 @@
-# FilePoint Server
+<p align="center">
+  <img src="docs/images/filepoint.png" width="92" height="92" alt="FilePoint logo">
+</p>
 
-FilePoint's ZimaOS server: the Python API and web proxy, the browser UI, the FileBrowser Quantum and ONLYOFFICE configuration templates, and the optional removable storage and Android MTP helpers.
+<h1 align="center">FilePoint Server</h1>
 
-The [Windows app source and installers](https://github.com/JNathan34/FilePoint-Windows-Downloads) are maintained in a separate repository. In the Windows app, sign in with the URL that serves the FilePoint proxy.
+<p align="center">
+  Browse your ZimaOS storage, manage files, and edit documents from your browser.
+</p>
 
-- `foldericons/server.py`, `native_writes.py`, `client.js`, and `connected_storage_client.js` implement the API and web experience. The tests and UI assets live alongside them.
-- `docker-compose.example.yml` and `filebrowser/config.example.yaml` describe the container stack. FileBrowser Quantum and ONLYOFFICE are pulled as container images.
-- `foldericons/plexpoint-foldericons.service` and `foldericons/filepoint-storage.service` describe the host services. See [connected storage](foldericons/CONNECTED-STORAGE.md) for the broker and optional Android container. The Android image fetches upstream jmtpfs source and applies the tracked patch when it builds.
+<p align="center">
+  <a href="#configure-an-instance"><strong>Server setup</strong></a> ·
+  <a href="#a-look-inside-filepoint">Screenshots</a> ·
+  <a href="https://github.com/JNathan34/FilePoint-Windows-Downloads/releases/latest">Download for Windows</a>
+</p>
+
+## A look inside FilePoint
+
+<table>
+  <tr>
+    <td width="53%" valign="top">
+      <strong>Preview changes before renaming files</strong><br>
+      Add a prefix or suffix to multiple files at once.<br><br>
+      <a href="docs/images/bulk-rename.png"><img src="docs/images/bulk-rename.png" alt="FilePoint bulk rename dialog previewing a new prefix for two sample files" width="420"></a>
+    </td>
+    <td width="47%" valign="top">
+      <strong>See how each upload is doing</strong><br>
+      Track uploads by folder and see which files need attention.<br><br>
+      <a href="docs/images/grouped-uploads.png"><img src="docs/images/grouped-uploads.png" alt="FilePoint upload panel grouping sample PDF, Word, and PowerPoint uploads by folder" width="350"></a>
+    </td>
+  </tr>
+</table>
+
+- **Browse and find files.** Use the folder tree, custom folder icons, and search to navigate your storage. Recover deleted items from the Recycle Bin.
+- **Edit documents.** Open supported files in ONLYOFFICE from the browser. Microsoft editing can be configured separately.
+- **See connected storage.** The host broker can surface mounted USB drives in FilePoint. An optional Android helper handles phones that use MTP.
+
+## Use FilePoint in Windows Explorer
+
+<table>
+  <tr>
+    <td width="58%" valign="middle">
+      <strong>One server for the browser and Windows</strong><br><br>
+      Install FilePoint for Windows, then sign in with your FilePoint server URL. Your accessible folders appear as a drive in File Explorer.<br><br>
+      <a href="https://github.com/JNathan34/FilePoint-Windows-Downloads/releases/latest"><strong>Get the x64 or ARM64 installer</strong></a><br>
+      <a href="https://github.com/JNathan34/FilePoint-Windows-Downloads">Browse the Windows app source</a>
+    </td>
+    <td width="42%" align="center">
+      <a href="docs/images/windows-sign-in.png"><img src="docs/images/windows-sign-in.png" alt="FilePoint for Windows sign-in with a server URL field and blank username and password fields" width="300"></a>
+    </td>
+  </tr>
+</table>
 
 ## Configure an instance
+
 
 Use a Linux host with Docker Compose, systemd, and Python 3.11 or later. ZimaOS normally uses `/DATA/AppData/plexpoint-files-office` for the application directory. Use a separate host or test instance to try the example Compose project; for an existing ZimaOS deployment, use the Compose project managed by CasaOS.
 
@@ -19,6 +63,15 @@ Use a Linux host with Docker Compose, systemd, and Python 3.11 or later. ZimaOS 
 5. Configure optional integrations separately. The Microsoft bridge uses local OAuth or rclone configuration; connected storage requires the host broker. Leave the Android helper off until it can be tested with a physical phone on the target host.
 
 Live configuration, account databases, storage contents, session and verification data, and server backups are outside this repository. Keep those in your private ZimaOS backup process if you need to restore the entire instance.
+
+## What runs on the server
+
+| Part | Where to look |
+| --- | --- |
+| FilePoint API and web UI | [`foldericons/`](foldericons/) contains the Python proxy, browser client, assets, and tests. |
+| FileBrowser Quantum and ONLYOFFICE | [Compose example](docker-compose.example.yml) and [FileBrowser config template](filebrowser/config.example.yaml). |
+| Host services and Android helper | [Connected storage notes](foldericons/CONNECTED-STORAGE.md), systemd units, and the [Android helper](foldericons/android/). The Android image fetches upstream jmtpfs and applies the included patch. |
+
 
 ## Checks
 
