@@ -24046,22 +24046,82 @@
       const style = document.createElement("style");
       style.id = "plexpoint-utility-style";
       style.textContent = `
-        .plexpoint-utility { position:fixed; z-index:2147483000; inset:100px 24px 24px auto; width:min(760px,calc(100vw - 48px)); box-sizing:border-box; display:flex; flex-direction:column; background:#20252d !important; color:#edf2f8 !important; border:1px solid #7778; border-radius:12px; box-shadow:0 16px 60px #0007; overflow:hidden; font:14px/1.5 system-ui,sans-serif; }
-        .plexpoint-utility header { position:static !important; height:auto !important; width:auto !important; display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid #8885; flex:none; background:transparent !important; color:inherit !important; }
-        .plexpoint-utility h2 { flex:1; margin:0; font-size:17px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .plexpoint-utility button { border:1px solid #8886; border-radius:6px; padding:7px 12px; background:transparent; color:inherit; cursor:pointer; }
-        .plexpoint-utility button:disabled { opacity:.45; cursor:default; }
-        .plexpoint-utility button:focus-visible,.plexpoint-utility input:focus-visible,.plexpoint-utility select:focus-visible { outline:2px solid #7ab8ff; outline-offset:2px; }
-        .plexpoint-utility-body { padding:18px; overflow:auto; min-height:0; flex:1; }
-        .plexpoint-utility footer { position:static !important; padding:12px 18px; border-top:1px solid #8885; flex:none; color:inherit !important; }
-        @media(max-width:600px) { .plexpoint-utility { inset:92px 8px 8px; width:auto; } }
+        html body .plexpoint-utility {
+          --utility-line: var(--plexpoint-explorer-border, #ffffff26);
+          --utility-muted: var(--plexpoint-explorer-muted, #aab5bb);
+          --utility-accent: var(--plexpoint-accent, var(--primaryColor, #2196f3));
+          --utility-highlight: color-mix(in srgb, var(--utility-accent) 55%, white);
+          position: fixed;
+          z-index: 2147483000;
+          inset: 0;
+          margin: auto;
+          width: min(720px, calc(100% - 32px));
+          height: fit-content;
+          max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          outline: none;
+          border: 1px solid var(--utility-line);
+          border-radius: 12px;
+          background: var(--plexpoint-explorer-base, #1b242b) !important;
+          color: var(--plexpoint-explorer-text, #f2f5f6) !important;
+          box-shadow: 0 24px 70px #0007, inset 0 1px 0 #ffffff0c;
+          font: 13px/1.45 "Segoe UI", system-ui, sans-serif;
+          color-scheme: dark;
+        }
+        html.plexpoint-transparent-effects body .plexpoint-utility {
+          background: var(--plexpoint-v168-glass-strong, rgba(18, 29, 39, .92)) !important;
+          backdrop-filter: var(--plexpoint-v168-blur, blur(20px)) !important;
+        }
+        .plexpoint-utility :is(header, footer) {
+          position: static !important;
+          inset: auto !important;
+          box-sizing: border-box;
+          height: auto !important;
+          width: auto !important;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex: none;
+          background: transparent !important;
+          color: inherit !important;
+        }
+        .plexpoint-utility header { padding: 12px 16px 12px 20px; border-bottom: 1px solid var(--utility-line); }
+        .plexpoint-utility h2 { flex: 1; margin: 0; color: inherit; font-size: 16px; font-weight: 600; }
+        .plexpoint-utility footer { padding: 12px 20px; border-top: 1px solid var(--utility-line); }
+        .plexpoint-utility-body { padding: 16px 20px; overflow: auto; min-height: 0; overscroll-behavior: contain; }
+        .plexpoint-utility button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0;
+          padding: 7px 12px;
+          min-height: 34px;
+          border: 1px solid var(--utility-line);
+          border-radius: 6px;
+          background: transparent;
+          color: inherit;
+          font: inherit;
+          text-transform: none;
+          cursor: pointer;
+        }
+        .plexpoint-utility .plexpoint-utility-close { width: 34px; padding: 0; border-color: transparent; color: var(--utility-muted); font-size: 22px; line-height: 1; }
+        .plexpoint-utility .plexpoint-utility-close:hover { background: var(--plexpoint-explorer-hover, #ffffff14); color: inherit; }
+        .plexpoint-utility button:disabled { opacity: .5; cursor: default; }
+        .plexpoint-utility :is(button, input, select, [tabindex="0"]):focus-visible { outline: 2px solid var(--utility-highlight); outline-offset: 2px; }
+        @media (max-width: 480px) {
+          html body .plexpoint-utility { width: calc(100% - 20px); max-height: calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+          .plexpoint-utility :is(header, footer, .plexpoint-utility-body) { padding-inline: 12px; }
+        }
       `;
       document.head.appendChild(style);
     }
     const previousFocus = document.activeElement;
     const panel = document.createElement("section");
     panel.className = "plexpoint-utility";
-    panel.style.setProperty("background", "#18232e", "important");
+    panel.tabIndex = -1;
     panel.setAttribute("role", "dialog");
     panel.setAttribute("aria-label", title);
     const header = document.createElement("header");
@@ -24069,13 +24129,14 @@
     heading.textContent = title;
     const closeButton = document.createElement("button");
     closeButton.type = "button";
-    closeButton.textContent = "Close";
+    closeButton.className = "plexpoint-utility-close";
+    closeButton.textContent = "×";
+    closeButton.title = "Close";
     closeButton.setAttribute("aria-label", `Close ${title}`);
     header.append(heading, closeButton);
     const body = document.createElement("div");
     body.className = "plexpoint-utility-body";
     const footer = document.createElement("footer");
-    footer.setAttribute("role", "status");
     panel.append(header, body, footer);
     const controller = new AbortController();
     const cleanups = [];
@@ -24100,7 +24161,7 @@
     document.body.appendChild(panel);
     window.addEventListener("pointerdown", outside, true);
     window.addEventListener("keydown", keyboard, true);
-    closeButton.focus({preventScroll:true});
+    panel.focus({preventScroll:true});
     explorerUtility = utility;
     return utility;
   }
@@ -24170,16 +24231,71 @@
     if(!sameFolder || items.length>100) { ui.body.textContent="Select between 2 and 100 items from the same folder."; return; }
     const style=document.createElement("style");
     style.textContent=`
-      .plexpoint-bulk-controls {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px;}
-      .plexpoint-bulk-controls label {display:flex;flex-direction:column;gap:4px;min-width:0;}
-      .plexpoint-bulk-controls input,.plexpoint-bulk-controls select {width:100%;box-sizing:border-box;padding:8px;border:1px solid #8896;border-radius:6px;background:#242d38;color:#edf2f8;}
-      .plexpoint-bulk-table {width:100%;border-collapse:collapse;table-layout:fixed;font:13px/1.5 system-ui;}
-      .plexpoint-bulk-table th,.plexpoint-bulk-table td {padding:9px 6px;text-align:left;border-bottom:1px solid #8884;overflow-wrap:anywhere;}
-      .plexpoint-bulk-table th {color:inherit;background:transparent;}
-      .plexpoint-bulk-table [data-error="true"] {color:#ffb6ad;}
-      .plexpoint-bulk-actions {display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-      .plexpoint-bulk-actions span {flex:1;min-width:150px;}
-      @media(max-width:450px){.plexpoint-bulk-controls{grid-template-columns:1fr;}}
+      .plexpoint-bulk-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .plexpoint-bulk-controls label { display: flex; flex-direction: column; gap: 5px; min-width: 0; color: var(--utility-muted); font-weight: 500; }
+      .plexpoint-bulk-controls :is(input, select) {
+        width: 100%;
+        min-width: 0;
+        min-height: 36px;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 6px 9px;
+        border: 1px solid var(--utility-line);
+        border-radius: 6px;
+        background: var(--plexpoint-explorer-hover, #ffffff14);
+        color: var(--plexpoint-explorer-text, #f2f5f6);
+        font: inherit;
+      }
+      .plexpoint-bulk-preview-title { margin: 0 0 8px; color: inherit; font-size: 13px; font-weight: 600; }
+      .plexpoint-bulk-preview {
+        max-height: min(36dvh, 340px);
+        overflow: auto;
+        overscroll-behavior: contain;
+        border: 1px solid var(--utility-line);
+        border-radius: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: #a8b8c466 transparent;
+      }
+      .plexpoint-bulk-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; font: inherit; }
+      .plexpoint-bulk-table :is(th, td) { padding: 8px 10px; text-align: left; overflow-wrap: anywhere; }
+      .plexpoint-bulk-table th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: color-mix(in srgb, rgb(from var(--plexpoint-explorer-base, #1b242b) r g b / 1) 82%, #333f49);
+        color: inherit;
+        font-weight: 600;
+      }
+      .plexpoint-bulk-table th:last-child { width: 24%; }
+      .plexpoint-bulk-table td { border-top: 1px solid var(--utility-line); }
+      .plexpoint-bulk-table tr:nth-child(even) td { background: color-mix(in srgb, var(--plexpoint-explorer-hover, #ffffff14) 45%, transparent); }
+      .plexpoint-bulk-table [data-state="ready"] td:nth-child(2) { color: var(--utility-highlight); }
+      .plexpoint-bulk-table [data-state="error"] td:nth-child(2) { color: #ffc0b8; }
+      .plexpoint-bulk-status {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 5px;
+        background: var(--plexpoint-explorer-hover, #ffffff14);
+        color: var(--utility-muted);
+        font-size: 12px;
+      }
+      [data-state="ready"] .plexpoint-bulk-status { background: color-mix(in srgb, var(--utility-accent) 17%, transparent); color: var(--utility-highlight); }
+      [data-state="error"] .plexpoint-bulk-status { background: #ff6c6120; color: #ffc0b8; }
+      [data-state="renamed"] .plexpoint-bulk-status { background: #47c78524; color: #a4eac3; }
+      .plexpoint-bulk-actions { flex-wrap: wrap; justify-content: flex-end; }
+      .plexpoint-bulk-summary { flex: 1 1 200px; color: var(--utility-muted); }
+      .plexpoint-utility .plexpoint-bulk-apply {
+        border-color: color-mix(in srgb, var(--utility-accent) 55%, transparent);
+        background: color-mix(in srgb, var(--utility-accent) 24%, #14212a);
+        color: #f7fafc;
+        font-weight: 600;
+      }
+      .plexpoint-utility .plexpoint-bulk-apply:hover:not(:disabled) { background: color-mix(in srgb, var(--utility-accent) 42%, #14212a); }
+      @media (max-width: 480px) {
+        .plexpoint-bulk-table :is(th, td) { padding-inline: 6px; }
+        .plexpoint-bulk-table th:last-child { width: 29%; }
+      }
+      @media (max-width: 380px) { .plexpoint-bulk-controls { grid-template-columns: 1fr; } }
     `;
     ui.panel.append(style);
     const controls=document.createElement("div"); controls.className="plexpoint-bulk-controls";
@@ -24199,12 +24315,24 @@
     field("find","Find text",""); field("replace","Replace with","");
     field("prefix","Prefix",""); field("suffix","Suffix","");
     const table=document.createElement("table");table.className="plexpoint-bulk-table";
-    table.innerHTML="<thead><tr><th>Current name</th><th>New name</th><th>Status</th></tr></thead>";
+    table.innerHTML='<thead><tr><th scope="col">Current name</th><th scope="col">New name</th><th scope="col">Status</th></tr></thead>';
     const rows=document.createElement("tbody");table.append(rows);
-    ui.body.replaceChildren(controls,table);
+    const previewTitle = document.createElement("h3");
+    previewTitle.id = "plexpoint-bulk-preview-title";
+    previewTitle.className = "plexpoint-bulk-preview-title";
+    previewTitle.textContent = "Preview";
+    const preview = document.createElement("div");
+    preview.className = "plexpoint-bulk-preview";
+    preview.setAttribute("role", "region");
+    preview.setAttribute("aria-labelledby", previewTitle.id);
+    preview.append(table);
+    ui.body.replaceChildren(controls, previewTitle, preview);
     ui.footer.className="plexpoint-bulk-actions";
     const status=document.createElement("span");
-    const apply=document.createElement("button");apply.type="button";apply.textContent="Rename files";
+    status.className = "plexpoint-bulk-summary";
+    status.setAttribute("role", "status");
+    const apply=document.createElement("button");apply.type="button";apply.textContent="Rename items";
+    apply.className = "plexpoint-bulk-apply";
     ui.footer.replaceChildren(status,apply);
     let existing=listingView()?.state?.req?.items || [], busy=false, finished=false;
     const options=()=>Object.fromEntries(Object.entries(fields).map(([key,input])=>[key,input.value]));
@@ -24214,10 +24342,19 @@
       for(const [key,input] of Object.entries(fields))input.parentElement.style.display=(key==="mode" || (mode==="number" && ["name","start","digits"].includes(key)) || (mode==="replace" && ["find","replace"].includes(key)) || (mode==="text" && ["prefix","suffix"].includes(key)))?"":"none";
       rows.replaceChildren();
       for(const entry of plan) {
-        const tr=document.createElement("tr");tr.dataset.error=String(!!entry.error);
-        for(const value of [entry.originalName,entry.name,entry.result||entry.error||(entry.changed?"Ready":"Unchanged")]) {const td=document.createElement("td");td.textContent=value;tr.append(td);}
+        const tr = document.createElement("tr");
+        tr.dataset.state = entry.error ? "error" : entry.result === "Renamed" ? "renamed" : entry.changed && !entry.result ? "ready" : "neutral";
+        const currentName = tr.insertCell();
+        currentName.textContent = entry.originalName;
+        const newName = tr.insertCell();
+        newName.textContent = entry.name;
+        const badge = document.createElement("span");
+        badge.className = "plexpoint-bulk-status";
+        badge.textContent = entry.result || entry.error || (entry.changed ? "Ready" : "Unchanged");
+        tr.insertCell().append(badge);
         rows.append(tr);
       }
+      preview.tabIndex = preview.scrollHeight > preview.clientHeight ? 0 : -1;
       const changed=plan.filter(entry=>entry.changed).length;
       apply.disabled=busy||finished||!changed||plan.some(entry=>entry.error);
       status.textContent=plan.some(entry=>entry.error)?"Resolve the highlighted names before renaming.":`${changed} of ${items.length} items will change. Extensions are preserved. Each rename can be undone with Ctrl+Z.`;
